@@ -11,9 +11,15 @@ app.get('/stocks', async (req, res) => {
 })
 
 app.get('/stocks/:symbol', async (req, res) => {
-  const { params: { symbol } } = req
-  const data = await stocks.getStockPoints(symbol, new Date())
-  res.send(data)
-})
+  const { params: { symbol } } = req;
+  
+  try {
+    const data = await stocks.getStockPoints(symbol, new Date());
+    res.send(data);
+  } catch (error) {
+    console.error(`Failed to retrieve stock data for ${symbol}:`, error.message);
+    res.status(500).send({ error: `Failed to retrieve stock data for ${symbol}` });
+  }
+});
 
 app.listen(3000, () => console.log('Server is running!'))
